@@ -3,15 +3,19 @@ using UnityEngine;
 public class Damage : MonoBehaviour
 {
     [SerializeField] private int damage; // just in case of bigger damage
-
-    private void OnCollisionEnter(Collision collision)
+    private const string Pending = nameof(Pending);
+    
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        var hasHealth = collision.gameObject.TryGetComponent<IHealth>(out var health);
+        if(!collision.gameObject.TryGetComponent<IHealth>(out var health)) return;
         
-        if (!hasHealth)
-        {
-            return;
-        }
         health.Health -= damage;
+        if (health.Health > 0) Debug.Log("Wow");
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (!col.CompareTag(Pending)) return;
+        Destroy(col.gameObject);
     }
 }

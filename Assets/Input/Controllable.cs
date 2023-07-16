@@ -20,7 +20,7 @@ public class Controllable : MonoBehaviour, IControllable
     {
         if (_pressed != value && value == false) _cannon.Shoot();
         if (value) _aiming.Aim(Destination);
-        _aiming.arrowRenderer.enabled = value;
+        _aiming.arrowRenderer.enabled = value && _cannon.AbleToShoot;
 
         _pressed = value;
 
