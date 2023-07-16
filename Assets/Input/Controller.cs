@@ -1,17 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
     private Controls _controls;
     private IControllable _controllable;
+    private Camera _camera;
     
     private void Awake()
     {
         _controls = new Controls();
         _controllable = GetComponent<IControllable>();
+        _camera = Camera.main;
     }
 
     private void OnEnable()
@@ -26,7 +25,8 @@ public class Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _controllable.Destination = _controls.Ingame.PointerPlace.ReadValue<Vector2>();
+        var dest = _controls.Ingame.PointerPlace.ReadValue<Vector2>();
+        _controllable.Destination = _camera.ScreenToWorldPoint(dest);
         _controllable.Pressed = _controls.Ingame.PointerPressed.IsPressed();
     }
 }
