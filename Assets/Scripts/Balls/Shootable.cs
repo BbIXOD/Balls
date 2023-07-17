@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Shootable : MonoBehaviour, IShootable
@@ -34,6 +33,23 @@ public class Shootable : MonoBehaviour, IShootable
 
     public void Return()
     {
+        if (_cannonTransform.position == transform.position)
+            return;
+
+        if (_cannon.changePos)
+        {
+            _cannon.changePos = false;
+            Stop();
+            var bTransform = _bullet.transform;
+            var ballPos = bTransform.position; 
+            ballPos.y = _cannonTransform.position.y;
+            bTransform.position = ballPos;
+            _cannonTransform.position = ballPos;
+            
+            _cannon.BulletCount++;
+            return;
+        }
+        
         _bullet.Stop();
         _returning.enabled = true;
         _returning.Destination = _cannonTransform.position;

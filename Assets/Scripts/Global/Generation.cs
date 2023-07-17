@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Generation : MonoBehaviour
 {
+    private const string LoseScene = nameof(LoseScene);
+    
     private const int Percents = 100;
 
     [SerializeField] private GameObject
@@ -23,13 +26,13 @@ public class Generation : MonoBehaviour
         brickChance,
         ballChance;
 
-    [SerializeField] private float fallPerTurn;
+    [SerializeField] private float fallPerTurn,
+        losePosY;
 
     private void Awake()
     {
         SingletonsHandler.generator = this;
         _size = brick.transform.lossyScale;
-        _brickHealth = brick.GetComponent<IHealth>();
         GenerateBricks();
         startPos.y = endPos.y; //for spawning one row;
     }
@@ -39,6 +42,10 @@ public class Generation : MonoBehaviour
         foreach (var falling in bricks)
         {
             falling.position += Vector3.down * fallPerTurn;
+            if (falling.position.y <= losePosY)
+            {
+                SceneManager.LoadScene(LoseScene);
+            }
         }
         
         GenerateBricks();
@@ -47,14 +54,14 @@ public class Generation : MonoBehaviour
     private void GenerateBricks()
     {
         var curPos = startPos;
-        for (; curPos.y <= endPos.x; curPos.y += _size.x)
+        for (; curPos.y <= endPos.y; curPos.y += _size.y)
         {
             for (; curPos.x <= endPos.x; curPos.x += _size.x)
             {
                 if (Random.Range(0, Percents) <= brickChance)
                 {
-                    _brickHealth.Health = Random.Range(minHealth, maxHealth);
-                    Instantiate(brick, curPos, Quaternion.identity);
+                    var instance = Instantiate(brick, curPos, Quaternion.identity);
+                    instance.GetComponent<IHealth>().Health = Random.Range(minHealth, maxHealth);
                     continue;
                 }
 

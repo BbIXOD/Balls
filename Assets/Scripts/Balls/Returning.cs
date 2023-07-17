@@ -21,6 +21,7 @@ public class Returning : MonoBehaviour
         if ((_myTransform.position - Destination).magnitude < MinDistance)
         {
             _myTransform.position = Destination;
+            SingletonsHandler.cannon.BulletCount++;
             enabled = false;
             return;
         }

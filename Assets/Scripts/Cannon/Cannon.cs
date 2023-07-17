@@ -13,6 +13,8 @@ public class Cannon : MonoBehaviour
     [SerializeField]private TMP_Text text;
     private Generation _generator;
     public bool AbleToShoot => BulletCount == bullets.Count;
+    public bool shooting;
+    public bool changePos;
     public int BulletCount { get => _bulletCount; set => SetCount(value); }
     private int _bulletCount;
 
@@ -26,15 +28,28 @@ public class Cannon : MonoBehaviour
         _generator = FindObjectOfType<Generation>();
     }
 
-    public async void Shoot()
+    public async void Shoot() //i know about coroutines, but they are slow
     {
         if (!AbleToShoot) return;
-        
+
+        changePos = true;
+        shooting = true;
         foreach (var bullet in bullets)
         {
             bullet.Shoot();
             await Task.Delay(bulletDelay);
         }
+
+        shooting = false;
+    }
+
+    public void ReturnAll()
+    {
+        foreach (var bullet in bullets)
+        {
+            bullet.Return();
+        }
+        
     }
 
     private void SetCount(int value)
@@ -49,9 +64,7 @@ public class Cannon : MonoBehaviour
             Instantiate(Resources.Load(Path + ball), _myTransform.position, _myTransform.rotation);
         }
         pending.Clear();
-        Debug.Log("Tururu");
-        
-        //_generator.GameStep();
+        _generator.GameStep();
         
     }
 }

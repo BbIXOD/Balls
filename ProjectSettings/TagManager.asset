@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ball
   - Pending
+  - Brick
   layers:
   - Default
   - TransparentFX

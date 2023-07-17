@@ -10,7 +10,6 @@ public class Damage : MonoBehaviour
         if(!collision.gameObject.TryGetComponent<IHealth>(out var health)) return;
         
         health.Health -= damage;
-        if (health.Health > 0) Debug.Log("Wow");
     }
 
     private void OnTriggerEnter2D(Collider2D col)
